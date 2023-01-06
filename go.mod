@@ -1,4 +1,4 @@
-module goteleout
+module github/teadove/goteleout
 
 go 1.17
 
