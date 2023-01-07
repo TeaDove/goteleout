@@ -12,8 +12,8 @@ import (
 	"strconv"
 	"strings"
 
-	"goteleout/internal/schemas"
-	"goteleout/internal/supplier"
+	"github.com/teadove/goteleout/internal/schemas"
+	"github.com/teadove/goteleout/internal/supplier"
 
 	"github.com/urfave/cli/v2"
 )

@@ -1,9 +1,10 @@
 package supplier
 
 import (
-	"goteleout/internal/schemas"
 	"strconv"
 	"testing"
+
+	"github.com/teadove/goteleout/internal/schemas"
 )
 
 func TestSupplier_BadTokenError(t *testing.T) {
