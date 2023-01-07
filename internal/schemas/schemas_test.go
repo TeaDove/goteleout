@@ -1,4 +1,4 @@
-package shared
+package schemas
 
 import (
 	"io/ioutil"
@@ -26,6 +26,6 @@ func TestShared_Settings(t *testing.T) {
 	}
 	t.Logf("%+v\n", settings)
 
-	assert.Equal(t, settings.DefaultUser, "123", "Default user assertion error")
+	assert.Equal(t, settings.User, "123", "Default user assertion error")
 	assert.Equal(t, settings.Token, "abc", "Token assertion error")
 }

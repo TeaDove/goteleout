@@ -1,4 +1,4 @@
-package shared
+package schemas
 
 import (
 	"encoding/json"
@@ -10,8 +10,8 @@ import (
 const defaultPath = "%s/.config/teleout.json"
 
 type ClientSettings struct {
-	Token       string `json:"token"`
-	DefaultUser string `json:"user"`
+	Token string `json:"token"`
+	User  string `json:"user"`
 }
 
 func GetSettingsFromFile(path string) (ClientSettings, error) {
