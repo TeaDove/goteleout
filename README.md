@@ -6,14 +6,14 @@ Powered with love
 
 # Examples
 - `ls -la | goteleout -u 418878871 -c` - send output of `ls -la` to chat `418878871` with monospace font
-- `teleout -u 418878871 -f main.py "<b>This is main.py!</b>" --html` - send file *main.py*, with bolded text "This is main.py!"
+- `teleout -q -f main.py` - send file `main.py` without notification to default user
 
 # Features
 1. Send files, text messages directly to telegram
 2. Pipe to teleout(`ls | teleout` will work)
 3. HTML parse mode supported
 4. Easy install and use
-5. Captions for files
+5. GetMe - listen for updates and log chatId, userName etc. Userfull for getting this information.
 
 # Manual
 ```shell
@@ -40,7 +40,9 @@ GLOBAL OPTIONS:
 
 # Installation
 1. From source code
-```go install github.com/teadove/goteleout```
+```
+go install github.com/teadove/goteleout
+```
 Or download your version from [release page](https://github.com/TeaDove/goteleout/releases), i.e. for Apple Silicon
 ```
 wget -cO - https://github.com/TeaDove/goteleout/releases/download/1.0.0/goteleout-1.0.0-darwin-arm64 > goteleout
