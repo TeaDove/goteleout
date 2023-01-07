@@ -12,9 +12,8 @@ import (
 	"strconv"
 	"strings"
 
-	"goteleout/internal/schemas"
-	"goteleout/internal/supplier"
-
+	"github.com/teadove/goteleout/internal/schemas"
+	"github.com/teadove/goteleout/internal/supplier"
 	"github.com/urfave/cli/v2"
 )
 
@@ -85,10 +84,15 @@ func action(cCtx *cli.Context) error {
 
 	userId, err := strconv.ParseInt(settings.User, 10, 64)
 	if err != nil {
-		panic(err)
+		return err
 	}
-	err = telegramSupplier.SendMessage(userId, messageText, cCtx.Bool(htmlArg), cCtx.Bool(codeArg), cCtx.Bool(quiteArg))
 
+	if cCtx.Bool(fileArg) {
+		telegramSupplier.SendFiles(userId, messageText, cCtx.Bool(quiteArg))
+		return nil
+	}
+
+	err = telegramSupplier.SendMessage(userId, messageText, cCtx.Bool(htmlArg), cCtx.Bool(codeArg), cCtx.Bool(quiteArg))
 	return err
 }
 
@@ -98,6 +102,7 @@ const htmlArg = "html"
 const tokenArg = "token"
 const userArg = "user"
 const settingsFileArg = "settings-file"
+const fileArg = "file"
 const verboseArg = "verbose"
 const getMeArg = "get-me"
 
@@ -133,6 +138,12 @@ func RunCli() {
 			Name:  htmlArg,
 			Value: false,
 			Usage: "do no escape html tags",
+		},
+		&cli.BoolFlag{
+			Name:    fileArg,
+			Aliases: []string{"f"},
+			Value:   false,
+			Usage:   "send files, arguments will be traited as filenames",
 		},
 		&cli.StringFlag{
 			Name:    tokenArg,
