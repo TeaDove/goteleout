@@ -141,9 +141,10 @@ func RunCli() {
 			Usage:   "telegram api token",
 		},
 		&cli.StringFlag{
-			Name:  userArg,
-			Value: "",
-			Usage: "telegram user id",
+			Name:    userArg,
+			Aliases: []string{"u"},
+			Value:   "",
+			Usage:   "telegram user id",
 		},
 		&cli.StringFlag{
 			Name:  settingsFileArg,
@@ -163,10 +164,11 @@ func RunCli() {
 	}
 
 	app := &cli.App{
-		Name:        "goteleout",
-		Description: "pipes data to telegram, https://github.com/teadove/goteleout",
-		Flags:       flags,
-		Action:      action,
+		Name:      "goteleout",
+		Usage:     "pipes data to telegram, https://github.com/teadove/goteleout",
+		UsageText: "goteleout [options] \"text to send\"",
+		Flags:     flags,
+		Action:    action,
 	}
 
 	if err := app.Run(os.Args); err != nil {
