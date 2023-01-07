@@ -41,6 +41,12 @@ GLOBAL OPTIONS:
 # Installation
 1. From source code
 ```go install github.com/teadove/goteleout```
+Or download your version from [release page](https://github.com/TeaDove/goteleout/releases), i.e. for Apple Silicon
+```
+wget -cO - https://github.com/TeaDove/goteleout/releases/download/1.0.0/goteleout-1.0.0-darwin-arm64 > goteleout
+chmod u+x goteleout
+# mv goteleout ~/.local/bin # or any other location in your PATH
+```
 2. Get bot token from [@BotFather](https://t.me/BotFather)
 3. Put config data in `~/.config/teleout.json` in format `{"token": <telegram-token>, "user": <telegram-user-id>}`
 4. Run `ls -la | goteleout -c`
