@@ -21,7 +21,7 @@ func NewTelegramSupplier(token string, debug bool) (TelegramSupplier, error) {
 	return TelegramSupplier{bot: bot}, nil
 }
 
-func (telegramSupplier TelegramSupplier) SendMessage(chat_id int64, text string, as_html bool, as_code bool) {
+func (telegramSupplier TelegramSupplier) SendMessage(chat_id int64, text string, as_html bool, as_code bool, quite bool) error {
 	if !as_html {
 		text = html.EscapeString(text)
 	}
@@ -30,11 +30,13 @@ func (telegramSupplier TelegramSupplier) SendMessage(chat_id int64, text string,
 	}
 
 	message := tgbotapi.NewMessage(chat_id, text)
+	message.BaseChat.DisableNotification = quite
 	message.ParseMode = "html"
 	_, err := telegramSupplier.bot.Send(message)
 	if err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
 
 const replyTemplate = `Get me
@@ -70,7 +72,7 @@ func compileReply(update tgbotapi.Update, taged bool) string {
 		html.EscapeString(update.Message.Text))
 }
 
-func (telegramSupplier TelegramSupplier) GetMe(quite bool) {
+func (telegramSupplier TelegramSupplier) GetMe(quite bool) error {
 	bot := telegramSupplier.bot
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
@@ -90,8 +92,9 @@ func (telegramSupplier TelegramSupplier) GetMe(quite bool) {
 
 			_, err := bot.Send(msg)
 			if err != nil {
-				panic(err)
+				return err
 			}
 		}
 	}
+	return nil
 }

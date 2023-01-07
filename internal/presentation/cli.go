@@ -67,8 +67,8 @@ func action(cCtx *cli.Context) error {
 		panic(err)
 	}
 	if cCtx.Bool(getMeArg) {
-		telegramSupplier.GetMe(cCtx.Bool(quiteArg))
-		return nil
+		err := telegramSupplier.GetMe(cCtx.Bool(quiteArg))
+		return err
 	}
 
 	if settings.User == "" {
@@ -83,13 +83,13 @@ func action(cCtx *cli.Context) error {
 		messageText = "Hello World!\n\nWith Love from teleout"
 	}
 
-	user_id, err := strconv.ParseInt(settings.User, 10, 64)
+	userId, err := strconv.ParseInt(settings.User, 10, 64)
 	if err != nil {
 		panic(err)
 	}
-	telegramSupplier.SendMessage(user_id, messageText, cCtx.Bool(htmlArg), cCtx.Bool(codeArg))
+	err = telegramSupplier.SendMessage(userId, messageText, cCtx.Bool(htmlArg), cCtx.Bool(codeArg), cCtx.Bool(quiteArg))
 
-	return nil
+	return err
 }
 
 const quiteArg = "quite"
