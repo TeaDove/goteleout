@@ -65,3 +65,8 @@ func TestSupplier_SendMessageBadHTML(t *testing.T) {
 		panic("Should return error!")
 	}
 }
+
+func TestSupplier_SendFiles(t *testing.T) {
+	telegramSupplier, userId := getSupplierFixture()
+	telegramSupplier.SendFiles(userId, "../../go.mod telegram.go", true)
+}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html"
 	"log"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -21,7 +22,7 @@ func NewTelegramSupplier(token string, debug bool) (TelegramSupplier, error) {
 	return TelegramSupplier{bot: bot}, nil
 }
 
-func (telegramSupplier TelegramSupplier) SendMessage(chat_id int64, text string, as_html bool, as_code bool, quite bool) error {
+func (telegramSupplier TelegramSupplier) SendMessage(chatId int64, text string, as_html bool, as_code bool, quite bool) error {
 	if !as_html {
 		text = html.EscapeString(text)
 	}
@@ -29,7 +30,7 @@ func (telegramSupplier TelegramSupplier) SendMessage(chat_id int64, text string,
 		text = fmt.Sprintf("<code>%s</code>", text)
 	}
 
-	message := tgbotapi.NewMessage(chat_id, text)
+	message := tgbotapi.NewMessage(chatId, text)
 	message.BaseChat.DisableNotification = quite
 	message.ParseMode = "html"
 	_, err := telegramSupplier.bot.Send(message)
@@ -37,6 +38,23 @@ func (telegramSupplier TelegramSupplier) SendMessage(chat_id int64, text string,
 		return err
 	}
 	return nil
+}
+
+func (telegramSupplier TelegramSupplier) SendFiles(chatId int64, files string, quite bool) {
+	for _, fileName := range strings.Fields(files) {
+		// if !strings.HasPrefix(fileName, "/") {
+		// 	pwd, err := os.Getwd()
+		// 	if err == nil {
+		// 		fileName = fmt.Sprintf("%s/%s", pwd, fileName)
+		// 	}
+		// }
+		message := tgbotapi.NewDocument(chatId, tgbotapi.FilePath(fileName))
+		message.BaseChat.DisableNotification = quite
+		_, err := telegramSupplier.bot.Send(message)
+		if err != nil {
+			log.Printf("Error occured while sending file: %s, err: %s", fileName, err)
+		}
+	}
 }
 
 const replyTemplate = `Get me
