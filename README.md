@@ -1,7 +1,7 @@
 # Teleout
-Golang version of [teleout](https://github.com/teadove/teleout)  
-Pipe stdout and files(TBD) to telegram  
-This software uses telegram bots  
+Golang version of [teleout](https://github.com/teadove/teleout)
+Pipe stdout and files(TBD) to telegram
+This software uses telegram bots
 Powered with love
 
 # Examples

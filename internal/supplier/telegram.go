@@ -22,11 +22,11 @@ func NewTelegramSupplier(token string, debug bool) (TelegramSupplier, error) {
 	return TelegramSupplier{bot: bot}, nil
 }
 
-func (telegramSupplier TelegramSupplier) SendMessage(chatId int64, text string, as_html bool, as_code bool, quite bool) error {
-	if !as_html {
+func (telegramSupplier TelegramSupplier) SendMessage(chatId int64, text string, asHtml bool, asCode bool, quite bool) error {
+	if !asHtml {
 		text = html.EscapeString(text)
 	}
-	if as_code {
+	if asCode {
 		text = fmt.Sprintf("<code>%s</code>", text)
 	}
 

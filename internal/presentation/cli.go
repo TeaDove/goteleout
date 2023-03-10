@@ -17,7 +17,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-const errorMsg = `Error while accuring settings:
+const errorMsg = `Error while acquiring settings:
 
 %s\n
 
@@ -48,8 +48,8 @@ func getSettings(cCtx *cli.Context) (schemas.ClientSettings, error) {
 	token := cCtx.String(tokenArg)
 
 	if user == "" || token == "" {
-		settinsPath := cCtx.String(settingsFileArg)
-		settings, err := schemas.GetSettingsFromFile(settinsPath)
+		settingsPath := cCtx.String(settingsFileArg)
+		settings, err := schemas.GetSettingsFromFile(settingsPath)
 		return settings, err
 	}
 	return schemas.ClientSettings{User: user, Token: token}, nil
