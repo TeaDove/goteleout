@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/pkg/errors"
 )
 
 type TelegramSupplier struct {
@@ -22,7 +23,13 @@ func NewTelegramSupplier(token string, debug bool) (TelegramSupplier, error) {
 	return TelegramSupplier{bot: bot}, nil
 }
 
-func (telegramSupplier TelegramSupplier) SendMessage(chatId int64, text string, asHtml bool, asCode bool, quite bool) error {
+func (telegramSupplier *TelegramSupplier) SendMessage(
+	chatId int64,
+	text string,
+	asHtml bool,
+	asCode bool,
+	quite bool,
+) error {
 	if !asHtml {
 		text = html.EscapeString(text)
 	}
@@ -35,12 +42,12 @@ func (telegramSupplier TelegramSupplier) SendMessage(chatId int64, text string, 
 	message.ParseMode = "html"
 	_, err := telegramSupplier.bot.Send(message)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "unable to send message")
 	}
 	return nil
 }
 
-func (telegramSupplier TelegramSupplier) SendFiles(chatId int64, files string, quite bool) {
+func (telegramSupplier *TelegramSupplier) SendFiles(chatId int64, files string, quite bool) {
 	for _, fileName := range strings.Fields(files) {
 		// if !strings.HasPrefix(fileName, "/") {
 		// 	pwd, err := os.Getwd()
@@ -90,7 +97,7 @@ func compileReply(update tgbotapi.Update, taged bool) string {
 		html.EscapeString(update.Message.Text))
 }
 
-func (telegramSupplier TelegramSupplier) GetMe(quite bool) error {
+func (telegramSupplier *TelegramSupplier) GetMe(quite bool) error {
 	bot := telegramSupplier.bot
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60

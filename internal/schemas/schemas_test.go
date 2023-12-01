@@ -8,23 +8,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestShared_Settings(t *testing.T) {
+func TestUnit_Settings(t *testing.T) {
 	file, err := ioutil.TempFile("/tmp", "goteleout_test")
-	if err != nil {
-		panic(err)
-	}
+	assert.NoError(t, err)
 	defer os.Remove(file.Name())
 
 	err = os.WriteFile(file.Name(), []byte("{\"token\": \"abc\", \"user\": \"123\"}"), 0644)
-	if err != nil {
-		panic(err)
-	}
+	assert.NoError(t, err)
 
 	settings, err := GetSettingsFromFile(file.Name())
-	if err != nil {
-		panic(err)
-	}
-	t.Logf("%+v\n", settings)
+	assert.NoError(t, err)
 
 	assert.Equal(t, settings.User, "123", "Default user assertion error")
 	assert.Equal(t, settings.Token, "abc", "Token assertion error")

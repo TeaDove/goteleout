@@ -2,7 +2,6 @@ package presentation
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -11,6 +10,8 @@ import (
 	"runtime/pprof"
 	"strconv"
 	"strings"
+
+	"github.com/pkg/errors"
 
 	"github.com/teadove/goteleout/internal/schemas"
 	"github.com/teadove/goteleout/internal/supplier"
@@ -38,7 +39,7 @@ func readFromPipe() (string, error) {
 
 	_, err := io.Copy(buf, reader)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "unable to copy from buf")
 	}
 	return buf.String(), nil
 }
@@ -46,13 +47,25 @@ func readFromPipe() (string, error) {
 func getSettings(cCtx *cli.Context) (schemas.ClientSettings, error) {
 	user := cCtx.String(userArg)
 	token := cCtx.String(tokenArg)
-
-	if user == "" || token == "" {
-		settingsPath := cCtx.String(settingsFileArg)
-		settings, err := schemas.GetSettingsFromFile(settingsPath)
-		return settings, err
+	if !(user == "" || token == "") {
+		return schemas.ClientSettings{User: user, Token: token}, nil
 	}
-	return schemas.ClientSettings{User: user, Token: token}, nil
+
+	settingsPath := cCtx.String(settingsFileArg)
+
+	settings, err := schemas.GetSettingsFromFile(settingsPath)
+	if err != nil {
+		return schemas.ClientSettings{}, errors.Wrap(err, "unable get settings from file")
+	}
+
+	if user != "" {
+		settings.User = user
+	}
+	if token != "" {
+		settings.Token = token
+	}
+
+	return settings, nil
 }
 
 func action(cCtx *cli.Context) error {
@@ -63,11 +76,16 @@ func action(cCtx *cli.Context) error {
 	}
 	telegramSupplier, err := supplier.NewTelegramSupplier(settings.Token, cCtx.Bool(verboseArg))
 	if err != nil {
+		fmt.Printf("%+v", err)
 		panic(err)
 	}
 	if cCtx.Bool(getMeArg) {
 		err := telegramSupplier.GetMe(cCtx.Bool(quiteArg))
-		return err
+		if err != nil {
+			fmt.Printf("%+v", err)
+			panic(err)
+		}
+		return nil
 	}
 
 	if settings.User == "" {
@@ -92,7 +110,13 @@ func action(cCtx *cli.Context) error {
 		return nil
 	}
 
-	err = telegramSupplier.SendMessage(userId, messageText, cCtx.Bool(htmlArg), cCtx.Bool(codeArg), cCtx.Bool(quiteArg))
+	err = telegramSupplier.SendMessage(
+		userId,
+		messageText,
+		cCtx.Bool(htmlArg),
+		cCtx.Bool(codeArg),
+		cCtx.Bool(quiteArg),
+	)
 	return err
 }
 
@@ -182,8 +206,10 @@ func RunCli() {
 		Action:    action,
 	}
 
-	if err := app.Run(os.Args); err != nil {
-		panic(err)
-	}
+	err := app.Run(os.Args)
 
+	if err != nil {
+		fmt.Printf("%+v\n", err)
+		os.Exit(1)
+	}
 }
