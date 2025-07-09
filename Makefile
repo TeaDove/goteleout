@@ -6,31 +6,14 @@ GO ?= GO111MODULE=on CGO_ENABLED=0 go
 GOOS ?= $(shell $(GO) version | cut -d' ' -f4 | cut -d'/' -f1)
 GOARCH ?= $(shell $(GO) version | cut -d' ' -f4 | cut -d'/' -f2)
 
-lint:
-	pre-commit run -a
-
-test-unit:
-	go test ./... -run "TestUnit_*"
-
-test-integration:
-	go test ./... -run "TestIntegration_*"
-
-test: test-unit lint test-integration
+test:
+	go test ./...
 
 run:
 	go run main.go
 
 install:
 	go install
-
-
-clean:
-	@echo ">> CLEAN"
-	@$(GO) clean -i ./...
-	@rm -f goteleout-*-*
-	@rm -rf dist/*
-	@echo ">> OK"
-
 
 crosscompile:
 	@echo ">> CROSSCOMPILE linux/amd64"

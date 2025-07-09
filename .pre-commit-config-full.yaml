@@ -9,4 +9,5 @@ repos:
     rev: v2.1.6
     hooks:
       - id: golangci-lint-config-verify
-      - id: golangci-lint
+      - id: golangci-lint-full
+

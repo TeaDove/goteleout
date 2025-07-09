@@ -5,8 +5,8 @@ This software uses telegram bots
 Powered with love
 
 # Examples
-- `ls -la | goteleout -u 418878871 -c` - send output of `ls -la` to chat `418878871` with monospace font
-- `teleout -q -f main.py` - send file `main.py` without notification to default user
+- `ls -la | goteleout -c` - send output of `ls -la` with monospace font
+- `teleout -q -f main.py` - send file `main.py` without notification
 
 # Features
 1. Send files, text messages directly to telegram
@@ -23,25 +23,19 @@ NAME:
 USAGE:
    goteleout [options] "text to send"
 
-COMMANDS:
-   help, h  Shows a list of commands or help for one command
-
 GLOBAL OPTIONS:
-   --code, -c              send text with <code> tag to make it monospace (default: false)
-   --quite, -q             send message without notifications (default: false)
-   --html                  do no escape html tags (default: false)
-   --token value           telegram api token [$TELEGRAM_TOKEN]
-   --user value, -u value  telegram user id
-   --settings-file value   file to store default settings
-   --verbose, -v           (default: false)
-   --get-me                will listen for updates, and reply with user_id and chat_id (default: false)
-   --help, -h              show help (default: false)
+   --code, -c   send text with <code> tag to make it monospace (default: false)
+   --quite, -q  send message without notifications (default: false)
+   --html       do no escape html tags (default: false)
+   --file, -f   specify files to send (default: false)
+   --help, -h   show help
 ```
 
 # Installation
 1. From source code
 ```
-go install github.com/teadove/goteleout
+go install github.com/teadove/goteleout@latest
+
 ```
 Or download your version from [release page](https://github.com/TeaDove/goteleout/releases), i.e. for Apple Silicon
 ```
@@ -55,5 +49,4 @@ chmod u+x goteleout
 
 > don't worry, there are no sniffer and smth like that
 
-> for feedbacks, write me [here](https://t.me/teas_feedbacks_bot)<br>
 inspired by https://termbin.com
