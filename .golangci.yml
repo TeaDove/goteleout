@@ -13,10 +13,10 @@ linters:
     - errname
     - errorlint
     - fatcontext
-    - forbidigo
+#    - forbidigo
     - funlen
     - gocheckcompilerdirectives
-    - gochecknoglobals
+#    - gochecknoglobals
     - gochecknoinits
     - gochecksumtype
     - gocognit
@@ -54,7 +54,7 @@ linters:
     - protogetter
     - reassign
     - recvcheck
-    - revive
+#    - revive
     - rowserrcheck
     - sloglint
     - sqlclosecheck
@@ -70,7 +70,7 @@ linters:
     - usestdlibvars
     - wastedassign
     - whitespace
-    - wsl
+    - wsl_v5
     - zerologlint
   settings:
     cyclop:

@@ -4,18 +4,19 @@ import (
 	"fmt"
 	"html"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/fatih/color"
 	"github.com/pkg/errors"
+	tele "gopkg.in/telebot.v4"
 )
 
 type Supplier struct {
-	bot *tgbotapi.BotAPI
+	bot *tele.Bot
 }
 
 func NewSupplier(token string) (Supplier, error) {
-	bot, err := tgbotapi.NewBotAPI(token)
+	bot, err := tele.NewBot(tele.Settings{Token: token})
 	if err != nil {
-		return Supplier{}, errors.Wrap(err, "failed to create bot")
+		return Supplier{}, errors.Wrap(err, "create bot")
 	}
 
 	return Supplier{bot: bot}, nil
@@ -24,23 +25,23 @@ func NewSupplier(token string) (Supplier, error) {
 func (r *Supplier) SendMessage(
 	chatID int64,
 	text string,
-	asHTML bool,
+	parseMode string,
 	asCode bool,
 	quite bool,
 ) error {
-	if !asHTML {
-		text = html.EscapeString(text)
+	if asCode && parseMode != "" {
+		color.Yellow(`Settings "parse mode" and "code" simultaneously are not allowed, ignoring parseMode`)
 	}
 
 	if asCode {
-		text = fmt.Sprintf("<code>%s</code>", text)
+		parseMode = tele.ModeHTML
+		text = fmt.Sprintf("<code>%s</code>", html.EscapeString(text))
 	}
 
-	message := tgbotapi.NewMessage(chatID, text)
-	message.DisableNotification = quite
-	message.ParseMode = "html"
-
-	_, err := r.bot.Send(message)
+	_, err := r.bot.Send(tele.ChatID(chatID), text, &tele.SendOptions{
+		DisableNotification: quite,
+		ParseMode:           parseMode,
+	})
 	if err != nil {
 		return errors.Wrap(err, "unable to send message")
 	}
@@ -50,12 +51,15 @@ func (r *Supplier) SendMessage(
 
 func (r *Supplier) SendFiles(chatID int64, filenames []string, quite bool) error {
 	for _, filename := range filenames {
-		message := tgbotapi.NewDocument(chatID, tgbotapi.FilePath(filename))
-		message.DisableNotification = quite
-
-		_, err := r.bot.Send(message)
+		_, err := r.bot.Send(
+			tele.ChatID(chatID),
+			&tele.Document{File: tele.FromDisk(filename), FileName: filename},
+			&tele.SendOptions{
+				DisableNotification: quite,
+				ParseMode:           tele.ModeHTML,
+			})
 		if err != nil {
-			return errors.Wrap(err, "failed to send file")
+			return errors.Wrap(err, "send file")
 		}
 	}
 

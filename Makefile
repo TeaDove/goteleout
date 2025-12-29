@@ -7,10 +7,7 @@ GOOS ?= $(shell $(GO) version | cut -d' ' -f4 | cut -d'/' -f1)
 GOARCH ?= $(shell $(GO) version | cut -d' ' -f4 | cut -d'/' -f2)
 
 test:
-	go test ./...
-
-run:
-	go run main.go
+	gotestsum --format-hide-empty-pkg -- ./... --race
 
 install:
 	go install
@@ -35,3 +32,9 @@ crosscompile:
 	@echo ">> CROSSCOMPILE windows/arm64"
 	@GOOS=windows GOARCH=arm64 $(GO) build -o $(PKG_OUTPUT)-$(PKG_VERSION)-windows-arm64
 	@echo ">> OK"
+
+git-check-pushed:
+	git status -s | xargs --null test -z
+
+release: test git-check-pushed crosscompile
+	gh release create $(PKG_VERSION) ./build/* -t="$(PKG_VERSION)" -p=false -n="new release!!!"

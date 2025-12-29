@@ -8,9 +8,8 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/fatih/color"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-	"github.com/teadove/teasutils/utils/logger_utils"
 )
 
 func readFromPipe() (string, error) {
@@ -24,7 +23,7 @@ func readFromPipe() (string, error) {
 
 	_, err := io.Copy(buf, reader)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to copy from buf")
+		return "", errors.WithStack(err)
 	}
 
 	return buf.String(), nil
@@ -35,12 +34,8 @@ func captureInterrupt() {
 	signal.Notify(c, os.Interrupt)
 
 	go func() {
-		for sig := range c {
-			zerolog.Ctx(logger_utils.NewLoggedCtx()).
-				Info().
-				Stringer("signal", sig).
-				Msg("exiting")
-
+		for range c {
+			color.White("exiting")
 			os.Exit(int(syscall.SIGINT))
 		}
 	}()

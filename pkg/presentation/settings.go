@@ -14,7 +14,7 @@ const (
 
 type Settings struct {
 	Token string `json:"token"`
-	User  string `json:"user"`
+	User  int64  `json:"user"`
 }
 
 func getSettings() (Settings, error) {
@@ -29,15 +29,15 @@ func getSettings() (Settings, error) {
 
 	jsonFile, err := os.ReadFile(path)
 	if err != nil {
-		return Settings{}, errors.Wrapf(err, "failed to read settings file")
+		return Settings{}, errors.Wrapf(err, "read settings file")
 	}
 
 	err = json.Unmarshal(jsonFile, &settings)
 	if err != nil {
-		return Settings{}, errors.WithStack(err)
+		return Settings{}, errors.Wrap(err, "json unmarshal")
 	}
 
-	if settings.Token == "" || settings.User == "" {
+	if settings.Token == "" || settings.User == 0 {
 		return Settings{}, errors.New("either token or user is empty")
 	}
 
@@ -53,8 +53,8 @@ func setDefaultSettings() error {
 	path := fmt.Sprintf(settingsPathFmt, dirName)
 
 	var settings = Settings{
-		Token: "<telegram-token>",
-		User:  "<user-id>",
+		Token: "TelegramBotToken",
+		User:  123,
 	}
 
 	bytes, err := json.Marshal(settings)

@@ -2,16 +2,15 @@ package presentation
 
 import (
 	"context"
+	"fmt"
 	"os"
-	"strconv"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"github.com/teadove/goteleout/pkg/telegram_supplier"
-	"github.com/teadove/teasutils/utils/logger_utils"
-
 	"github.com/urfave/cli/v3"
+	tele "gopkg.in/telebot.v4"
 )
 
 func action(_ context.Context, c *cli.Command) error {
@@ -19,15 +18,15 @@ func action(_ context.Context, c *cli.Command) error {
 	if err != nil {
 		innerErr := setDefaultSettings()
 		if innerErr != nil {
-			return errors.Wrap(innerErr, "failed to set default settings")
+			return errors.Wrap(innerErr, "set default settings")
 		}
 
-		return errors.Wrap(err, "failed to set settings, edit them at ~/.config/teleout.json")
+		return errors.Wrap(err, "set settings, edit them at ~/.config/teleout.json")
 	}
 
 	telegramSupplier, err := telegram_supplier.NewSupplier(settings.Token)
 	if err != nil {
-		return errors.WithStack(err)
+		return errors.Wrap(err, "new supplier")
 	}
 
 	messageText, err := readFromPipe()
@@ -39,38 +38,35 @@ func action(_ context.Context, c *cli.Command) error {
 		messageText = "Hello World!\n\nWith Love from teleout"
 	}
 
-	userID, err := strconv.ParseInt(settings.User, 10, 64)
-	if err != nil {
-		return errors.Wrap(err, "failed to parse user id")
-	}
-
 	if c.Bool(fileArg) {
-		err = telegramSupplier.SendFiles(userID, strings.Fields(messageText), c.Bool(quiteArg))
+		err = telegramSupplier.SendFiles(settings.User, strings.Fields(messageText), c.Bool(quiteArg))
 		if err != nil {
-			return errors.Wrap(err, "failed to send files")
+			return errors.Wrap(err, "send files")
 		}
 
 		return nil
 	}
 
 	err = telegramSupplier.SendMessage(
-		userID,
+		settings.User,
 		messageText,
-		c.Bool(htmlArg),
+		c.String(parseModeArg),
 		c.Bool(codeArg),
 		c.Bool(quiteArg),
 	)
 	if err != nil {
-		return errors.Wrap(err, "failed to send message")
+		return errors.Wrap(err, "send message")
 	}
 
 	return nil
 }
 
-const quiteArg = "quite"
-const codeArg = "code"
-const htmlArg = "html"
-const fileArg = "file"
+const (
+	quiteArg     = "quite"
+	codeArg      = "code"
+	parseModeArg = "parse-mode"
+	fileArg      = "file"
+)
 
 func Run() {
 	captureInterrupt()
@@ -80,7 +76,7 @@ func Run() {
 			Name:    codeArg,
 			Aliases: []string{"c"},
 			Value:   false,
-			Usage:   "send text with <code> tag to make it monospace",
+			Usage:   "send text with <code> tag to make it monospace, automatically set parseMode=HTML and escapes content",
 		},
 		&cli.BoolFlag{
 			Name:    quiteArg,
@@ -88,10 +84,10 @@ func Run() {
 			Value:   false,
 			Usage:   "send message without notifications",
 		},
-		&cli.BoolFlag{
-			Name:  htmlArg,
-			Value: false,
-			Usage: "do no escape html tags",
+		&cli.StringFlag{
+			Name:  parseModeArg,
+			Value: tele.ModeDefault,
+			Usage: fmt.Sprintf("sets parse mode, can be: %s, %s, %s", tele.ModeHTML, tele.ModeMarkdown, tele.ModeMarkdownV2),
 		},
 		&cli.BoolFlag{
 			Name:    fileArg,
@@ -109,12 +105,10 @@ func Run() {
 		Action:    action,
 	}
 
-	ctx := logger_utils.NewLoggedCtx()
-	err := app.Run(ctx, os.Args)
-
+	err := app.Run(context.Background(), os.Args)
 	if err != nil {
-		zerolog.Ctx(ctx).Error().Err(err).Msg("error during execution")
-
+		color.Red("Unexpected error during execution\n")
+		color.White(err.Error())
 		os.Exit(1)
 	}
 }
