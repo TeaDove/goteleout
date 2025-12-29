@@ -6,11 +6,11 @@ Powered with love
 
 # Examples
 - `ls -la | goteleout -c` - send output of `ls -la` with monospace font
-- `teleout -q -f main.py` - send file `main.py` without notification
+- `goteleout -q -f main.go` - send file `main.go` without notification
 
 # Features
 1. Send files, text messages directly to telegram
-2. Pipe to teleout(`ls | teleout` will work)
+2. Pipe to teleout(`ls | goteleout` will work)
 3. HTML parse mode supported
 4. Easy install and use
 5. GetMe - listen for updates and log chatId, userName etc. Userfull for getting this information.
@@ -24,27 +24,26 @@ USAGE:
    goteleout [options] "text to send"
 
 GLOBAL OPTIONS:
-   --code, -c   send text with <code> tag to make it monospace (default: false)
-   --quite, -q  send message without notifications (default: false)
-   --html       do no escape html tags (default: false)
-   --file, -f   specify files to send (default: false)
-   --help, -h   show help
+   --code, -c           send text with <code> tag to make it monospace, automatically set parseMode=HTML and escapes content
+   --quite, -q          send message without notifications
+   --parse-mode string  sets parse mode, can be: HTML, Markdown, MarkdownV2
+   --file, -f           specify files to send
+   --help, -h           show help
 ```
 
 # Installation
 1. From source code
 ```
 go install github.com/teadove/goteleout@latest
-
 ```
 Or download your version from [release page](https://github.com/TeaDove/goteleout/releases), i.e. for Apple Silicon
 ```
-wget -cO - https://github.com/TeaDove/goteleout/releases/download/1.0.0/goteleout-1.0.0-darwin-arm64 > goteleout
+wget -cO - https://github.com/TeaDove/goteleout/releases/download/1.1.3/goteleout-1.1.3-darwin-arm64 > goteleout
 chmod u+x goteleout
 # mv goteleout ~/.local/bin # or any other location in your PATH
 ```
 2. Get bot token from [@BotFather](https://t.me/BotFather)
-3. Put config data in `~/.config/teleout.json` in format `{"token": <telegram-token>, "user": <telegram-user-id>}`
+3. Put config data in `~/.config/goteleout.json` in format `{"token": <telegram-token>, "user": <telegram-user-id>}`
 4. Run `ls -la | goteleout -c`
 
 > don't worry, there are no sniffer and smth like that

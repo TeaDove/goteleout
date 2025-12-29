@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	settingsPathFmt = "%s/.config/teleout.json"
+	settingsPathFmt = "%s/.config/goteleout.json"
 )
 
 type Settings struct {
