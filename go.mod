@@ -3,10 +3,10 @@ module github.com/teadove/goteleout
 go 1.26
 
 require (
+	github.com/avast/retry-go/v4 v4.7.0
 	github.com/cockroachdb/errors v1.14.0
 	github.com/fatih/color v1.19.0
 	github.com/urfave/cli/v3 v3.11.0
-	gopkg.in/telebot.v4 v4.0.0-beta.10
 )
 
 require (

@@ -10,7 +10,6 @@ import (
 	"github.com/fatih/color"
 	"github.com/teadove/goteleout/pkg/telegramsupplier"
 	"github.com/urfave/cli/v3"
-	tele "gopkg.in/telebot.v4"
 )
 
 func action(_ context.Context, c *cli.Command) error {
@@ -24,10 +23,7 @@ func action(_ context.Context, c *cli.Command) error {
 		return errors.Wrap(err, "set settings, edit them at ~/.config/teleout.json")
 	}
 
-	telegramSupplier, err := telegramsupplier.NewSupplier(settings.Token)
-	if err != nil {
-		return errors.Wrap(err, "new supplier")
-	}
+	telegramSupplier := telegramsupplier.NewSupplier(settings.Token)
 
 	messageText, err := readFromPipe()
 	if err != nil {
@@ -35,7 +31,7 @@ func action(_ context.Context, c *cli.Command) error {
 	}
 
 	if messageText == "" {
-		messageText = "Hello World!\n\nWith Love from teleout"
+		messageText = "Hello World!"
 	}
 
 	if c.Bool(fileArg) {
@@ -86,12 +82,12 @@ func Run() {
 		},
 		&cli.StringFlag{
 			Name:  parseModeArg,
-			Value: tele.ModeDefault,
+			Value: telegramsupplier.ModeDefault,
 			Usage: fmt.Sprintf(
 				"sets parse mode, can be: %s, %s, %s",
-				tele.ModeHTML,
-				tele.ModeMarkdown,
-				tele.ModeMarkdownV2,
+				telegramsupplier.ModeHTML,
+				telegramsupplier.ModeMarkdown,
+				telegramsupplier.ModeMarkdownV2,
 			),
 		},
 		&cli.BoolFlag{
