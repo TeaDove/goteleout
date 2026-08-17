@@ -1,11 +1,11 @@
-package telegram_supplier
+package telegramsupplier
 
 import (
 	"fmt"
 	"html"
 
+	"github.com/cockroachdb/errors"
 	"github.com/fatih/color"
-	"github.com/pkg/errors"
 	tele "gopkg.in/telebot.v4"
 )
 

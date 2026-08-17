@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-yaml
       - id: check-json
@@ -12,14 +12,14 @@ repos:
       - id: check-added-large-files
       - id: check-merge-conflict
 
-  - repo: https://github.com/segmentio/golines
-    rev: v0.13.0
+  - repo: https://github.com/golangci/golines
+    rev: v0.15.0
     hooks:
       - id: golines
         args: [ --max-len=120 ]
 
   - repo: https://github.com/golangci/golangci-lint
-    rev: v2.4.0
+    rev: v2.10.1
     hooks:
       - id: golangci-lint-config-verify
       - id: golangci-lint-full

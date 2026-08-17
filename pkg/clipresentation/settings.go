@@ -1,11 +1,11 @@
-package presentation
+package clipresentation
 
 import (
 	"encoding/json"
 	"fmt"
 	"os"
 
-	"github.com/pkg/errors"
+	"github.com/cockroachdb/errors"
 )
 
 const (

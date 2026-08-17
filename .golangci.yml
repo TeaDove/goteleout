@@ -2,63 +2,100 @@ version: "2"
 linters:
   default: none
   enable:
+    - arangolint
     - asasalint
     - asciicheck
     - bidichk
+    - bodyclose
+    - canonicalheader
+    - containedctx
+    - contextcheck
     - copyloopvar
     - cyclop
     - decorder
+    #  - depguard
+    - dogsled
+    - dupl
+    - dupword
     - durationcheck
+    - embeddedstructfieldcheck
+    #  - err113
     - errcheck
+    - errchkjson
     - errname
     - errorlint
+    - exhaustive
+    #  - exhaustruct
+    - exptostd
     - fatcontext
-#    - forbidigo
+    #    - forbidigo
+    #  - forcetypeassert
+    - funcorder
     - funlen
+    - ginkgolinter
     - gocheckcompilerdirectives
-#    - gochecknoglobals
+    #    - gochecknoglobals
     - gochecknoinits
     - gochecksumtype
     - gocognit
     - goconst
     - gocritic
     - gocyclo
+    - godoclint
     - godot
+    #  - godox
     - goheader
     - gomoddirectives
     - gomodguard
     - goprintffuncname
     - gosec
+    - gosmopolitan
+    - govet
+    - grouper
     - iface
+    - importas
     - inamedparam
     - ineffassign
     - interfacebloat
     - intrange
+    - iotamixing
+    #  - ireturn
     - lll
     - loggercheck
+    - maintidx
     - makezero
     - mirror
     - misspell
+    #  - mnd
+    - modernize
     - musttag
     - nakedret
     - nestif
     - nilerr
+    - nilnesserr
+    - nilnil
+    - nlreturn
     - noctx
+    - noinlineerr
     - nolintlint
     - nonamedreturns
     - nosprintfhostport
     - paralleltest
     - perfsprint
+    - prealloc
     - predeclared
     - promlinter
     - protogetter
     - reassign
     - recvcheck
-#    - revive
+    - revive
     - rowserrcheck
     - sloglint
+    - spancheck
     - sqlclosecheck
     - staticcheck
+    - tagalign
+    - tagliatelle
     - testableexamples
     - testifylint
     - testpackage
@@ -66,13 +103,19 @@ linters:
     - tparallel
     - unconvert
     - unparam
+    - unqueryvet
     - unused
     - usestdlibvars
+    - usetesting
+    #  - varnamelen
     - wastedassign
     - whitespace
+    #  - wrapcheck
     - wsl_v5
     - zerologlint
   settings:
+    lll:
+      line-length: 140
     cyclop:
       max-complexity: 30
       package-average: 10

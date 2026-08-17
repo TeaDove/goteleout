@@ -1,4 +1,4 @@
-package presentation
+package clipresentation
 
 import (
 	"bufio"
@@ -8,8 +8,8 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/cockroachdb/errors"
 	"github.com/fatih/color"
-	"github.com/pkg/errors"
 )
 
 func readFromPipe() (string, error) {

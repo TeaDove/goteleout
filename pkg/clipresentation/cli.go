@@ -1,4 +1,4 @@
-package presentation
+package clipresentation
 
 import (
 	"context"
@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
+	"github.com/cockroachdb/errors"
 	"github.com/fatih/color"
-	"github.com/pkg/errors"
-	"github.com/teadove/goteleout/pkg/telegram_supplier"
+	"github.com/teadove/goteleout/pkg/telegramsupplier"
 	"github.com/urfave/cli/v3"
 	tele "gopkg.in/telebot.v4"
 )
@@ -24,7 +24,7 @@ func action(_ context.Context, c *cli.Command) error {
 		return errors.Wrap(err, "set settings, edit them at ~/.config/teleout.json")
 	}
 
-	telegramSupplier, err := telegram_supplier.NewSupplier(settings.Token)
+	telegramSupplier, err := telegramsupplier.NewSupplier(settings.Token)
 	if err != nil {
 		return errors.Wrap(err, "new supplier")
 	}
@@ -87,7 +87,12 @@ func Run() {
 		&cli.StringFlag{
 			Name:  parseModeArg,
 			Value: tele.ModeDefault,
-			Usage: fmt.Sprintf("sets parse mode, can be: %s, %s, %s", tele.ModeHTML, tele.ModeMarkdown, tele.ModeMarkdownV2),
+			Usage: fmt.Sprintf(
+				"sets parse mode, can be: %s, %s, %s",
+				tele.ModeHTML,
+				tele.ModeMarkdown,
+				tele.ModeMarkdownV2,
+			),
 		},
 		&cli.BoolFlag{
 			Name:    fileArg,
