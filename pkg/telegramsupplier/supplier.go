@@ -37,8 +37,8 @@ func (r *Supplier) methodURL(method string) string {
 	return fmt.Sprintf("%s/bot%s/%s", apiBaseURL, r.token, method)
 }
 
-func (r *Supplier) callForm(timeout time.Duration, method string, form url.Values) error {
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+func (r *Supplier) callForm(ctx context.Context, timeout time.Duration, method string, form url.Values) error {
+	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(

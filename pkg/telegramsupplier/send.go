@@ -25,11 +25,10 @@ const (
 )
 
 func (r *Supplier) SendMessage(
+	ctx context.Context,
 	chatID int64,
-	text string,
-	parseMode string,
-	asCode bool,
-	quite bool,
+	text, parseMode string,
+	asCode, quite bool,
 ) error {
 	if asCode && parseMode != "" {
 		color.Yellow(`Settings "parse mode" and "code" simultaneously are not allowed, ignoring parseMode`)
@@ -51,7 +50,7 @@ func (r *Supplier) SendMessage(
 	}
 
 	err := retry.Do(func() error {
-		return r.callForm(sendMessageTimeout, "sendMessage", form)
+		return r.callForm(ctx, sendMessageTimeout, "sendMessage", form)
 	}, retry.Attempts(retryAttempts))
 	if err != nil {
 		return errors.Wrap(err, "unable to send message")
@@ -60,10 +59,10 @@ func (r *Supplier) SendMessage(
 	return nil
 }
 
-func (r *Supplier) SendFiles(chatID int64, filenames []string, quite bool) error {
+func (r *Supplier) SendFiles(ctx context.Context, chatID int64, filenames []string, quite bool) error {
 	for _, filename := range filenames {
 		err := retry.Do(func() error {
-			return r.sendDocument(chatID, filename, quite)
+			return r.sendDocument(ctx, chatID, filename, quite)
 		}, retry.Attempts(retryAttempts))
 		if err != nil {
 			return errors.Wrap(err, "send file")
@@ -73,8 +72,8 @@ func (r *Supplier) SendFiles(chatID int64, filenames []string, quite bool) error
 	return nil
 }
 
-func (r *Supplier) sendDocument(chatID int64, filename string, quite bool) error {
-	ctx, cancel := context.WithTimeout(context.Background(), sendFilesTimeout)
+func (r *Supplier) sendDocument(ctx context.Context, chatID int64, filename string, quite bool) error {
+	ctx, cancel := context.WithTimeout(ctx, sendFilesTimeout)
 	defer cancel()
 
 	file, err := os.Open(filename)

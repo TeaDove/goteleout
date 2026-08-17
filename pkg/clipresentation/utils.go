@@ -2,6 +2,7 @@ package clipresentation
 
 import (
 	"bufio"
+	"context"
 	"io"
 	"os"
 	"os/signal"
@@ -10,7 +11,22 @@ import (
 
 	"github.com/cockroachdb/errors"
 	"github.com/fatih/color"
+	"github.com/urfave/cli/v3"
 )
+
+func getCommand(c *cli.Command) string {
+	command, _ := readFromPipe()
+	command = strings.TrimSpace(command)
+	if command == "" {
+		command = strings.TrimSpace(strings.Join(c.Args().Slice(), " "))
+	}
+
+	if command == "" {
+		return "Hello World!"
+	}
+
+	return command
+}
 
 func readFromPipe() (string, error) {
 	stat, _ := os.Stdin.Stat()
@@ -29,14 +45,19 @@ func readFromPipe() (string, error) {
 	return buf.String(), nil
 }
 
-func captureInterrupt() {
+func captureInterrupt() context.Context {
+	ctx, cancel := context.WithCancel(context.Background())
+
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 
 	go func() {
 		for range c {
+			cancel()
 			color.White("exiting")
 			os.Exit(int(syscall.SIGINT))
 		}
 	}()
+
+	return ctx
 }

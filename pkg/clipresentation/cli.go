@@ -12,7 +12,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-func action(_ context.Context, c *cli.Command) error {
+func action(ctx context.Context, c *cli.Command) error {
 	settings, err := getSettings()
 	if err != nil {
 		innerErr := setDefaultSettings()
@@ -25,17 +25,9 @@ func action(_ context.Context, c *cli.Command) error {
 
 	telegramSupplier := telegramsupplier.NewSupplier(settings.Token)
 
-	messageText, err := readFromPipe()
-	if err != nil {
-		messageText = strings.Join(c.Args().Slice(), " ")
-	}
-
-	if messageText == "" {
-		messageText = "Hello World!"
-	}
-
+	command := getCommand(c)
 	if c.Bool(fileArg) {
-		err = telegramSupplier.SendFiles(settings.User, strings.Fields(messageText), c.Bool(quiteArg))
+		err = telegramSupplier.SendFiles(ctx, settings.User, strings.Fields(command), c.Bool(quiteArg))
 		if err != nil {
 			return errors.Wrap(err, "send files")
 		}
@@ -44,8 +36,9 @@ func action(_ context.Context, c *cli.Command) error {
 	}
 
 	err = telegramSupplier.SendMessage(
+		ctx,
 		settings.User,
-		messageText,
+		command,
 		c.String(parseModeArg),
 		c.Bool(codeArg),
 		c.Bool(quiteArg),
@@ -65,7 +58,7 @@ const (
 )
 
 func Run() {
-	captureInterrupt()
+	ctx := captureInterrupt()
 
 	flags := []cli.Flag{
 		&cli.BoolFlag{
@@ -106,7 +99,7 @@ func Run() {
 		Action:    action,
 	}
 
-	err := app.Run(context.Background(), os.Args)
+	err := app.Run(ctx, os.Args)
 	if err != nil {
 		color.Red("Unexpected error during execution\n")
 		color.White(err.Error())
