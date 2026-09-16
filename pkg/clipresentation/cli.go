@@ -20,7 +20,7 @@ func action(ctx context.Context, c *cli.Command) error {
 			return errors.Wrap(innerErr, "set default settings")
 		}
 
-		return errors.Wrap(err, "set settings, edit them at ~/.config/teleout.json")
+		return errors.Wrap(err, "set settings, edit them at ~/.config/goteleout.json")
 	}
 
 	telegramSupplier := telegramsupplier.NewSupplier(settings.Token)
