@@ -15,12 +15,7 @@ import (
 func action(ctx context.Context, c *cli.Command) error {
 	settings, err := getSettings()
 	if err != nil {
-		innerErr := setDefaultSettings()
-		if innerErr != nil {
-			return errors.Wrap(innerErr, "set default settings")
-		}
-
-		return errors.Wrap(err, "set settings, edit them at ~/.config/goteleout.json")
+		return errors.Wrap(err, "get settings, edit them at ~/.config/goteleout.json")
 	}
 
 	telegramSupplier := telegramsupplier.NewSupplier(settings.Token)

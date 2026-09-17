@@ -29,7 +29,7 @@ func getSettings() (Settings, error) {
 
 	jsonFile, err := os.ReadFile(path)
 	if err != nil {
-		return Settings{}, errors.Wrapf(err, "read settings file")
+		return Settings{}, errors.Wrap(err, "read settings file")
 	}
 
 	err = json.Unmarshal(jsonFile, &settings)
@@ -42,30 +42,4 @@ func getSettings() (Settings, error) {
 	}
 
 	return settings, nil
-}
-
-func setDefaultSettings() error {
-	dirName, err := os.UserHomeDir()
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	path := fmt.Sprintf(settingsPathFmt, dirName)
-
-	var settings = Settings{
-		Token: "TelegramBotToken",
-		User:  123,
-	}
-
-	bytes, err := json.Marshal(settings)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	err = os.WriteFile(path, bytes, 0600)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	return nil
 }
