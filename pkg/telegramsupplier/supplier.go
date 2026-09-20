@@ -71,7 +71,7 @@ func (r *Supplier) callForm(ctx context.Context, timeout time.Duration, method s
 func checkResponse(resp *http.Response) error {
 	var body struct {
 		OK          bool   `json:"ok"`
-		ErrorCode   int    `json:"error_code"`
+		ErrorCode   int    `json:"error_code"` //nolint: tagliatelle // as expected
 		Description string `json:"description"`
 	}
 

@@ -42,9 +42,11 @@ func (r *Supplier) SendMessage(
 	form := url.Values{}
 	form.Set("chat_id", strconv.FormatInt(chatID, 10))
 	form.Set("text", text)
+
 	if parseMode != "" {
 		form.Set("parse_mode", parseMode)
 	}
+
 	if quite {
 		form.Set("disable_notification", "true")
 	}

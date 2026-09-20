@@ -16,6 +16,7 @@ import (
 
 func getCommand(c *cli.Command) string {
 	command, _ := readFromPipe()
+
 	command = strings.TrimSpace(command)
 	if command == "" {
 		command = strings.TrimSpace(strings.Join(c.Args().Slice(), " "))
