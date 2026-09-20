@@ -20,21 +20,27 @@ const (
 )
 
 const (
-	apiBaseURL    = "https://api.telegram.org"
+	apiBaseURL    = "https://api.telegram.org/bot"
 	retryAttempts = 5
 )
 
 type Supplier struct {
-	token  string
-	client *http.Client
+	token   string
+	baseURL string
+	client  *http.Client
 }
 
-func NewSupplier(token string) Supplier {
-	return Supplier{token: token, client: &http.Client{}}
+func NewSupplier(token string, proxy *string) Supplier {
+	baseURL := apiBaseURL
+	if proxy != nil {
+		baseURL = *proxy
+	}
+
+	return Supplier{token: token, baseURL: baseURL, client: &http.Client{}}
 }
 
 func (r *Supplier) methodURL(method string) string {
-	return fmt.Sprintf("%s/bot%s/%s", apiBaseURL, r.token, method)
+	return fmt.Sprintf("%s%s/%s", r.baseURL, r.token, method)
 }
 
 func (r *Supplier) callForm(ctx context.Context, timeout time.Duration, method string, form url.Values) error {

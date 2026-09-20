@@ -13,8 +13,9 @@ const (
 )
 
 type Settings struct {
-	Token string `json:"token"`
-	User  int64  `json:"user"`
+	Token string  `json:"token"`
+	User  int64   `json:"user"`
+	Proxy *string `json:"proxy,omitempty"`
 }
 
 func getSettings() (Settings, error) {

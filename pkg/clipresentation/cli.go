@@ -18,7 +18,7 @@ func action(ctx context.Context, c *cli.Command) error {
 		return errors.Wrap(err, "get settings, edit them at ~/.config/goteleout.json")
 	}
 
-	telegramSupplier := telegramsupplier.NewSupplier(settings.Token)
+	telegramSupplier := telegramsupplier.NewSupplier(settings.Token, settings.Proxy)
 
 	command := getCommand(c)
 	if c.Bool(fileArg) {
