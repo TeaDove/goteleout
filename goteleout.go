@@ -1,7 +1,9 @@
 package main
 
-import "github.com/teadove/goteleout/pkg/clipresentation"
+import (
+	"github.com/teadove/goteleout/cmd"
+)
 
 func main() {
-	clipresentation.Run()
+	cmd.Run()
 }

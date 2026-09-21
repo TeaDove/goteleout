@@ -1,4 +1,4 @@
-package clipresentation
+package cmd
 
 import (
 	"context"
@@ -8,21 +8,20 @@ import (
 
 	"github.com/cockroachdb/errors"
 	"github.com/fatih/color"
+	"github.com/teadove/goteleout/pkg/goteleoutservice"
 	"github.com/teadove/goteleout/pkg/telegramsupplier"
 	"github.com/urfave/cli/v3"
 )
 
 func action(ctx context.Context, c *cli.Command) error {
-	settings, err := getSettings()
+	goteleoutService, err := goteleoutservice.NewService()
 	if err != nil {
-		return errors.Wrap(err, "get settings, edit them at ~/.config/goteleout.json")
+		return errors.Wrap(err, "new service")
 	}
-
-	telegramSupplier := telegramsupplier.NewSupplier(settings.Token, settings.Proxy)
 
 	command := getCommand(c)
 	if c.Bool(fileArg) {
-		err = telegramSupplier.SendFiles(ctx, settings.User, strings.Fields(command), c.Bool(quiteArg))
+		err = goteleoutService.SendFiles(ctx, strings.Fields(command), c.Bool(quiteArg))
 		if err != nil {
 			return errors.Wrap(err, "send files")
 		}
@@ -30,14 +29,7 @@ func action(ctx context.Context, c *cli.Command) error {
 		return nil
 	}
 
-	err = telegramSupplier.SendMessage(
-		ctx,
-		settings.User,
-		command,
-		c.String(parseModeArg),
-		c.Bool(codeArg),
-		c.Bool(quiteArg),
-	)
+	err = goteleoutService.SendMessage(ctx, command, c.String(parseModeArg), c.Bool(codeArg), c.Bool(quiteArg))
 	if err != nil {
 		return errors.Wrap(err, "send message")
 	}

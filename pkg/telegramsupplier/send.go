@@ -61,10 +61,10 @@ func (r *Supplier) SendMessage(
 	return nil
 }
 
-func (r *Supplier) SendFiles(ctx context.Context, chatID int64, filenames []string, quite bool) error {
-	for _, filename := range filenames {
+func (r *Supplier) SendFiles(ctx context.Context, chatID int64, paths []string, quite bool) error {
+	for _, path := range paths {
 		err := retry.Do(func() error {
-			return r.sendDocument(ctx, chatID, filename, quite)
+			return r.sendDocument(ctx, chatID, path, quite)
 		}, retry.Attempts(retryAttempts))
 		if err != nil {
 			return errors.Wrap(err, "send file")

@@ -1,4 +1,4 @@
-package clipresentation
+package cmd
 
 import (
 	"bufio"
