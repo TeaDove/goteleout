@@ -13,5 +13,5 @@ install:
 	go install
 
 tag:
-	git tag utils/$(VERSION)
+	git tag $(VERSION)
 	git push origin --tags
