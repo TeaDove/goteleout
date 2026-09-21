@@ -55,7 +55,7 @@ func (r *Supplier) SendMessage(
 		return r.callForm(ctx, sendMessageTimeout, "sendMessage", form)
 	}, retry.Attempts(retryAttempts))
 	if err != nil {
-		return errors.Wrap(err, "unable to send message")
+		return errors.Wrap(r.redactToken(err), "unable to send message")
 	}
 
 	return nil
@@ -67,7 +67,7 @@ func (r *Supplier) SendFiles(ctx context.Context, chatID int64, paths []string, 
 			return r.sendDocument(ctx, chatID, path, quite)
 		}, retry.Attempts(retryAttempts))
 		if err != nil {
-			return errors.Wrap(err, "send file")
+			return errors.Wrap(r.redactToken(err), "send file")
 		}
 	}
 

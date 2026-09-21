@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/cockroachdb/errors"
@@ -22,6 +23,7 @@ const (
 const (
 	apiBaseURL    = "https://api.telegram.org/bot"
 	retryAttempts = 5
+	redactedToken = "[REDACTED]"
 )
 
 type Supplier struct {
@@ -41,6 +43,14 @@ func NewSupplier(token string, proxy *string) Supplier {
 
 func (r *Supplier) methodURL(method string) string {
 	return fmt.Sprintf("%s%s/%s", r.baseURL, r.token, method)
+}
+
+func (r *Supplier) redactToken(err error) error {
+	if r.token == "" {
+		return err
+	}
+
+	return errors.New(strings.ReplaceAll(err.Error(), r.token, redactedToken))
 }
 
 func (r *Supplier) callForm(ctx context.Context, timeout time.Duration, method string, form url.Values) error {
