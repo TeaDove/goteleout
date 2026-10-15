@@ -20,7 +20,7 @@ import (
 )
 
 const (
-	sendMessageTimeout = 5 * time.Second
+	sendMessageTimeout = 15 * time.Second
 	sendFilesTimeout   = 15 * time.Second
 )
 
