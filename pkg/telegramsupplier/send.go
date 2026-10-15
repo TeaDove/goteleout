@@ -20,8 +20,8 @@ import (
 )
 
 const (
-	sendMessageTimeout = 5 * time.Second
-	sendFilesTimeout   = 15 * time.Second
+	sendMessageTimeout = 15 * time.Second
+	sendFilesTimeout   = 30 * time.Second
 )
 
 func (r *Supplier) SendMessage(
