@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/cockroachdb/errors"
 	"github.com/fatih/color"
@@ -46,8 +47,10 @@ func readFromPipe() (string, error) {
 	return buf.String(), nil
 }
 
+const commandTimeout = 90 * time.Second
+
 func captureInterrupt() context.Context {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithTimeout(context.Background(), commandTimeout)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
@@ -55,6 +58,7 @@ func captureInterrupt() context.Context {
 	go func() {
 		for range c {
 			cancel()
+			time.Sleep(50 * time.Millisecond)
 			color.White("exiting")
 			os.Exit(int(syscall.SIGINT))
 		}

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/cockroachdb/errors"
 	"github.com/fatih/color"
@@ -15,9 +14,6 @@ import (
 )
 
 func action(ctx context.Context, c *cli.Command) error {
-	ctx, cancel := context.WithTimeout(ctx, commandTimeout)
-	defer cancel()
-
 	goteleoutService, err := goteleoutservice.NewService()
 	if err != nil {
 		return errors.Wrap(err, "new service")
@@ -46,8 +42,6 @@ const (
 	codeArg      = "code"
 	parseModeArg = "parse-mode"
 	fileArg      = "file"
-
-	commandTimeout = 90 * time.Second
 )
 
 func Run() {
