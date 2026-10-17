@@ -16,11 +16,10 @@ import (
 )
 
 func getCommand(c *cli.Command) string {
-	command, _ := readFromPipe()
-
-	command = strings.TrimSpace(command)
+	command := strings.TrimSpace(strings.Join(c.Args().Slice(), " "))
 	if command == "" {
-		command = strings.TrimSpace(strings.Join(c.Args().Slice(), " "))
+		command, _ = readFromPipe()
+		command = strings.TrimSpace(command)
 	}
 
 	if command == "" {
